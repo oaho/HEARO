@@ -1,0 +1,307 @@
+{% load static %}
+<html lang="en">
+    <style>
+        .hearo{
+            width: 27.5px;
+            height: 27.5px;
+        }
+        .sos{
+            width:35px;
+            height:30px;
+            
+        }
+        .gps{
+            width:35px;
+            height:35px;
+        }
+        .switch{
+            width:70px;
+            height:70px;
+        }
+        .decision{
+            width:75px;
+            height:75px;
+        }
+        .setting{
+            width: 30px;
+            height: 30px;
+        }
+        .info{
+            width: 30px;
+            height: 30px;
+        }
+        #imageContainer img{
+            display: none;
+    
+        }
+        #imageContainer img.active{
+            display: block;
+        
+        }
+        #sentenceContainer{
+            text-align: center;
+            
+        }
+        /* toggle css */
+        .toggle-switch input[type=checkbox]{
+            display: none;
+        }
+          
+        .toggle-track{
+            display: inline-block;
+            position: relative;
+            width: 60px;
+            height: 25px;
+            border-radius:60px;
+            background: #8b8b8b;
+        }
+        .toggle-track:before{
+            content:'';
+            display: block;
+            position: absolute;
+            top: -8px;
+            left: -15px;
+            width: 30px;
+            height: 30px; 
+            margin: 5px;
+            background: #fff;
+            border-radius:100%;
+            border:1px solid #8b8b8b;
+            transition:left 0.3s;
+        }
+        .toggle-switch input[type=checkbox] + label .toggle-track:after{
+            content:'OFF';
+            display: inline-block;
+            position: absolute;
+            right: 8px;
+            color: #fff;
+        }
+          
+        .toggle-switch input[type=checkbox]:checked + label .toggle-track{
+            background: #e51836;
+        }
+        .toggle-switch input[type=checkbox]:checked + label .toggle-track:before{
+            left: 30px;
+            border:1px solid #e51737;
+        }
+        .toggle-switch input[type=checkbox]:checked + label .toggle-track:after{
+            content:'ON';
+            left: 5px;
+        }
+        
+    </style>
+
+    <head>
+        <meta charset="utf-8">
+        <title>HearO</title>
+        <link rel="shortcut icon" href="{% static 'images/hearo_logo_3.png' %}" class="hearo">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Free HTML Templates" name="keywords">
+        <meta content="Free HTML Templates" name="description">
+
+        <!-- Favicon -->
+        {% comment %} <link href="img/favicon.ico" rel="icon"> {% endcomment %}
+
+        <!-- Google Web Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+
+        <!-- Icon Font Stylesheet -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+        <!-- Libraries Stylesheet -->
+        <link href="{%static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+        <!-- Customized Bootstrap Stylesheet -->
+        <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+        <!-- Template Stylesheet -->
+        <link href="{% static 'css/style copy.css' %}" rel="stylesheet">
+    
+    <div>
+        <!-- Navbar Start -->
+        {% include "navbar.html" %}
+        <!-- Navbar End -->
+    </head> 
+
+<body>
+    <!-- Page Header Start -->
+    <div class="container-fluid bg-dark p-5">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 class="display-4 text-white">환경설정</h1>
+                <a>Setting</a>
+             
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+
+    <!--setup Start -->
+    <form method="POST">
+    {% csrf_token %}
+    <div class="row g-5" style="--bs-gutter-x: 0;">
+        <div class="col-lg-4 col-md-6">
+            <div class="service-item bg-secondary text-center">
+                <h3 class="mb-3">민감도 설정</h3>
+                <p class="mb-0">
+                    - 주변 소리에 대한 민감도 설정<br><br>
+                    <div id="ex-out"></div>
+                </p><br>
+                <div>
+                    <label>
+                        <input type="range" min="0" max="100" id="ex-in" list="tickmarks" style="width: 310px; border-radius: 5px; accent-color: #F3525A"; name="sensitivity"  value="{{ settings.sensitivity }}">
+                        <datalist id="tickmarks">
+                            <option value="0" label="0">0</option>
+                            <option value="10" label="10">10</option>
+                            <option value="20" label="20">20</option>
+                            <option value="30" label="30">30</option>
+                            <option value="40" label="40">40</option>
+                            <option value="50" label="50">50</option>
+                            <option value="60" label="60">60</option>
+                            <option value="70" label="70">70</option>
+                            <option value="80" label="80">80</option>
+                            <option value="90" label="90">90</option>
+                            <option value="100" label="100">100</option>
+                
+                        </datalist>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="service-item bg-secondary text-center">
+                <h3 class="mb-3">카운트 설정(단위 : 초)</h3>
+                <p class="mb-0">
+                    - 위급상황시 신고 접수 빠르기를 설정<br><br>
+                    <div id="ex-out2" value = "{{ settings.count }}"></div>
+                </p><br>
+                <div>
+                    <label>
+                        <input type="range" min="10" max="60" id="ex-in2" list="tickmarks" style="width: 310px; border-radius: 5px; accent-color: #F3525A" name="count" value="{{ settings.count }}">
+                        <datalist id="tickmarks">
+                            <option value="0" label="0">0</option>
+                            <option value="10" label="10">10</option>
+                            <option value="20" label="20">20</option>
+                            <option value="30" label="30">30</option>
+                            <option value="40" label="40">40</option>
+                            <option value="50" label="50">50</option>
+                            <option value="60" label="60">60</option>
+                            <option value="70" label="70">70</option>
+                            <option value="80" label="80">80</option>
+                            <option value="90" label="90">90</option>
+                            <option value="100" label="100">100</option>
+                
+                        </datalist>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="graph">
+        <br><br>
+        <div class="col-12" id="center">
+            <button type='submit' onclick="alert('변경 완료 되었습니다.')" class="btn btn-primary" type="button">변경하기</button>
+        </div><br><br>
+    </div>
+</form>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'js/main.js' %}"></script>
+
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+ 
+    
+     
+
+    <script>
+        var xScale = d3.scaleLinear()
+    .domain([0,100])
+    .range([0,100])
+    </script>
+    <script>
+        document.querySelector('#ex-out').innerHTML =  {{ settings.sensitivity }};
+        document.querySelector('#ex-out2').innerHTML =  {{ settings.count }};
+
+        document.querySelector('#ex-in').addEventListener('input',e=>{
+            document.querySelector('#ex-out').innerHTML= e.target.value;
+        });
+    </script>
+    <script>
+        document.querySelector('#ex-in2').addEventListener('input',e=>{
+            document.querySelector('#ex-out2').innerHTML= e.target.value;
+        });
+    </script>
+
+    
+    <script>
+   
+    
+        /*버튼을 누르면 모달창이 켜지게 하기*/
+        const modal = document.getElementById("modal")
+        
+        function modalOn(){
+            modal.style.display="flex"
+
+        }
+        function isModalOn(){
+            return modal.style.display === "flex"
+        }
+        function modalOff() {
+            modal.style.display = "none"
+        }
+        const btnModal = document.getElementById("btn-modal")
+        btnModal.addEventListener("click", e => {
+                modalOn()
+            })
+
+        /*모달창의 클로즈(X)버튼을 누르면 모달창이 꺼지게 하기 */
+        const closeBtn = modal.querySelector(".close-area")
+        closeBtn.addEventListener("click", e => {
+            modal.style.display = "none"
+        })
+        /* 모달창 바깥 영역을 클릭하면 모달창이 꺼지게 하기*/
+        modal.addEventListener("click", e => {
+            const evTarget = e.target
+            if(evTarget.classList.contains("modal-overlay")) {
+                modal.style.display = "none"
+            }
+        })
+        /*모달창이 켜진 상태에서 ESC버튼을 누르면 모달창이 꺼지게 하기*/
+        window.addEventListener("keyup", e => {
+            if(modal.style.display === "flex" && e.key === "Escape") {
+                modal.style.display = "none"
+            }
+        })
+    </script>
+
+    <script>
+        var xScale = d3.scaleLinear()
+    .domain([0,100])
+    .range([0,100])
+    </script>
+    <script>
+        document.querySelector('#ex-in').addEventListener('input',e=>{
+            document.querySelector('#ex-out').innerHTML= e.target.value;
+        });
+    </script>
+    <script>
+        document.querySelector('#ex-in2').addEventListener('input',e=>{
+            document.querySelector('#ex-out2').innerHTML= e.target.value;
+        });
+    </script>
+
+    </body>
+</html>
